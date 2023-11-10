@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Instance {
@@ -16,16 +17,17 @@ public class Instance {
         File file = new File(filepath);
         try {
             Scanner sc = new Scanner(file);
+            sc.useLocale(Locale.US);
             this.nNodes = sc.nextInt();
             this.nEdges = sc.nextInt();
             this.nFacilities = sc.nextInt();
             this.distanceMatrix = new double[this.nNodes][this.nNodes];
-            while (sc.hasNextLine()){
-                int origin = sc.nextInt();
-                int dest = sc.nextInt();
-                double distance = sc.nextDouble();
-                System.out.println(origin + " " + dest + " " + distance);
-//                this.distanceMatrix[sc.nextInt()][sc.nextInt()]=sc.nextLong();
+            for(int i = 0; i<nEdges; i++){
+                int a = sc.nextInt();
+                int b = sc.nextInt();
+                double c = sc.nextDouble();
+                this.distanceMatrix[a][b]=c;
+                this.distanceMatrix[b][a]=c;
             }
             System.out.println("done");
 
