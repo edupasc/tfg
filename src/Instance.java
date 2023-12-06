@@ -1,12 +1,15 @@
 import java.io.*;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Instance {
     private int nNodes;
     private int nEdges;
     private int nFacilities;
     private double[][] distanceMatrix;
+    private int alpha;
     public static double INF = Double.MAX_VALUE;
 
     public Instance(String filepath) {
@@ -14,6 +17,7 @@ public class Instance {
     }
 
     public void loadFiles(String filepath){
+        this.setAlpha(filepath);
         File file = new File(filepath);
         try {
             Scanner sc = new Scanner(file);
@@ -22,6 +26,7 @@ public class Instance {
             this.nEdges = sc.nextInt();
             this.nFacilities = sc.nextInt();
             this.distanceMatrix = new double[this.nNodes][this.nNodes];
+            // initialize all distances to infinite (or 0 if origin = destination)
             for (int i = 0; i < this.nNodes; i++){
                 for (int j = 0; j < this.nNodes; j++){
                     if (i == j){
@@ -31,6 +36,7 @@ public class Instance {
                     }
                 }
             }
+            // assumes non-directed graph
             for(int i = 0; i<nEdges; i++){
                 int a = sc.nextInt();
                 int b = sc.nextInt();
@@ -51,5 +57,40 @@ public class Instance {
 
     public int getnNodes() {
         return nNodes;
+    }
+
+
+    public int getnFacilities() {
+        return nFacilities;
+    }
+
+    public void floydWarshall(){
+        int i, j, k;
+
+        // for all nodes i, j,k, checks if the distance from i to j is shorter passing through k
+        for (k=0; k<this.nNodes; k++){
+            for (i=0; i<this.nNodes; i++){
+                for (j=0; j<this.nNodes; j++){
+                    if (this.distanceMatrix[i][k] + this.distanceMatrix[k][j] < this.distanceMatrix[i][j]){
+                        //System.out.println("Swapped distance between " + i + " and " + j + ".\nOld value: " + this.distanceMatrix[i][j] + " New value: " + (this.distanceMatrix[i][k] + this.distanceMatrix[k][j]));
+                        this.distanceMatrix[i][j] = this.distanceMatrix[i][k] + this.distanceMatrix[k][j];
+                    }
+                }
+            }
+        }
+    }
+
+    private void setAlpha(String filename){
+        Pattern pattern = Pattern.compile("_(\\d)_");
+        Matcher matcher = pattern.matcher(filename);
+        this.alpha = Integer.parseInt(matcher.group(1));
+    }
+
+    public int getAlpha() {
+        return alpha;
+    }
+
+    public double getDistance(int a, int b){
+        return this.distanceMatrix[a][b];
     }
 }
