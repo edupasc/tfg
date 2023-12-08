@@ -1,23 +1,29 @@
 import java.util.Random;
 
 public class RandomAlg implements Algorithm{
+    private Instance instance;
     private Solution solution;
 
+    public RandomAlg(Instance instance) {
+        this.instance = instance;
+    }
+
     @Override
-    public void run(Instance instance) {
+    public Solution run() {
         // applies floydWarshall to the original graph
         instance.floydWarshall();
         // selects p facilities at random
-        this.selectFacilities(instance);
-        this.assignFacilities(instance);
+        this.selectFacilities();
+        this.assignFacilities();
+        return this.solution;
 
     }
 
-    private void selectFacilities(Instance instance){
+    private void selectFacilities(){
         int nNodes = instance.getnNodes();
         int nFacilities = instance.getnFacilities();
         Random rand = new Random();
-        Solution solution = new Solution(instance);
+        this.solution = new Solution(instance);
         for (int i = 0; i<nFacilities; i++){
             int newFacilty = rand.nextInt(nNodes);
             if (!solution.hasFacility(newFacilty)){
@@ -30,18 +36,19 @@ public class RandomAlg implements Algorithm{
         }
     }
 
-    private void assignFacilities(Instance instance){
+    private void assignFacilities(){
         int alpha = instance.getAlpha();
         int[] candidates = new int[alpha];
-        for (int i = 0; i<alpha; i++){
-            candidates[i] = -1;
-        }
         for (int i = 0; i<instance.getnNodes(); i++){
             if (!this.solution.hasFacility(i)){
+                for (int k = 0; k<alpha; k++){
+                    candidates[k] = -1;
+                }
                 for (int facility : solution.getFacilities()){
                     for (int j = 0; j<alpha; j++){
                         if (candidates[j]==-1 || instance.getDistance(i, facility) < instance.getDistance(i, candidates[j])){
                             candidates[j] = facility;
+                            break;
                         }
                     }
                 }

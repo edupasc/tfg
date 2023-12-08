@@ -11,13 +11,15 @@ public class Instance {
     private double[][] distanceMatrix;
     private int alpha;
     public static double INF = Double.MAX_VALUE;
+    private String filepath;
 
     public Instance(String filepath) {
+        this.filepath = filepath;
+        this.setAlpha(filepath);
         this.loadFiles(filepath);
     }
 
     public void loadFiles(String filepath){
-        this.setAlpha(filepath);
         File file = new File(filepath);
         try {
             Scanner sc = new Scanner(file);
@@ -83,7 +85,13 @@ public class Instance {
     private void setAlpha(String filename){
         Pattern pattern = Pattern.compile("_(\\d)_");
         Matcher matcher = pattern.matcher(filename);
-        this.alpha = Integer.parseInt(matcher.group(1));
+        if (matcher.find()){
+            this.alpha = Integer.parseInt(matcher.group(1));
+        } else {
+            System.out.println("Assuming alpha = 1");
+            this.alpha = 1;
+        }
+
     }
 
     public int getAlpha() {
@@ -92,5 +100,9 @@ public class Instance {
 
     public double getDistance(int a, int b){
         return this.distanceMatrix[a][b];
+    }
+
+    public String getFilepath() {
+        return filepath;
     }
 }
