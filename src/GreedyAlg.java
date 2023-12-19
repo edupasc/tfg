@@ -15,7 +15,14 @@ public class GreedyAlg extends GenericAlg{
         return this.solution;
     }
 
-    public void selectFacilities(){
+    private void selectFacilities(){
+        List<Map.Entry<Integer, Double>> candidates = getCandidates();
+        for (int i = 0; i<this.instance.getnFacilities(); i++){
+            this.solution.addFacilitiy(candidates.get(i).getKey());
+        }
+    }
+
+    protected List<Map.Entry<Integer, Double>> getCandidates(){
         List<Map.Entry<Integer, Double>> candidates = new ArrayList<>();
         for (int i = 0; i<this.instance.getnNodes(); i++){
             double average = 0;
@@ -31,8 +38,6 @@ public class GreedyAlg extends GenericAlg{
                 return (int) (o1.getValue() - o2.getValue());
             }
         });
-        for (int i = 0; i<this.instance.getnFacilities(); i++){
-            this.solution.addFacilitiy(candidates.get(i).getKey());
-        }
+        return candidates;
     }
 }
