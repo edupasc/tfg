@@ -1,3 +1,8 @@
+package Algorithms;
+
+import Models.Instance;
+import Models.Solution;
+
 import java.util.Random;
 
 public class RandomAlg extends GenericAlg{

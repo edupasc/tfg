@@ -1,3 +1,8 @@
+package Algorithms;
+
+import Models.Instance;
+import Models.Solution;
+
 import java.util.*;
 
 public class GreedyAlg extends GenericAlg{
@@ -17,6 +22,7 @@ public class GreedyAlg extends GenericAlg{
 
     private void selectFacilities(){
         List<Map.Entry<Integer, Double>> candidates = getCandidates();
+        // selects the p facilities with the lowest average distance to the rest of nodes
         for (int i = 0; i<this.instance.getnFacilities(); i++){
             this.solution.addFacilitiy(candidates.get(i).getKey());
         }
@@ -25,6 +31,7 @@ public class GreedyAlg extends GenericAlg{
     protected List<Map.Entry<Integer, Double>> getCandidates(){
         List<Map.Entry<Integer, Double>> candidates = new ArrayList<>();
         for (int i = 0; i<this.instance.getnNodes(); i++){
+            // greedy criterion is the average distance to the rest of nodes
             double average = 0;
             for (int j = 0; j<this.instance.getnNodes(); j++){
                 average+=this.instance.getDistance(i ,j);

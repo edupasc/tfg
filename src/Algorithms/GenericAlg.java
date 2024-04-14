@@ -1,4 +1,10 @@
-public abstract class GenericAlg implements Algorithm{
+package Algorithms;
+
+import Models.Algorithm;
+import Models.Instance;
+import Models.Solution;
+
+public abstract class GenericAlg implements Algorithm {
     Instance instance;
     Solution solution;
 
@@ -8,10 +14,13 @@ public abstract class GenericAlg implements Algorithm{
     }
 
     protected void assignFacilities(){
+        assignFacilities(this.solution);
+    }
+    protected void assignFacilities(Solution solution){
         int alpha = instance.getAlpha();
         int[] candidates = new int[alpha];
         for (int i = 0; i<instance.getnNodes(); i++){
-            if (!this.solution.hasFacility(i)){
+            if (!solution.hasFacility(i)){
                 for (int k = 0; k<alpha; k++){
                     candidates[k] = -1;
                 }
@@ -24,7 +33,7 @@ public abstract class GenericAlg implements Algorithm{
                     }
                 }
                 for (int j = 0; j<alpha; j++){
-                    this.solution.allocate(i, candidates[j], j);
+                    solution.allocate(i, candidates[j], j);
                 }
             }
         }

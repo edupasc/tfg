@@ -1,10 +1,13 @@
+package Models;
+
 import java.io.*;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Instance {
+public class Instance implements Cloneable{
     private int nNodes;
     private int nEdges;
     private int nFacilities;
@@ -104,5 +107,14 @@ public class Instance {
 
     public String getFilepath() {
         return filepath;
+    }
+
+    public Object clone() throws CloneNotSupportedException{
+        Instance cloned = (Instance) super.clone();
+        cloned.distanceMatrix = new double[this.distanceMatrix.length][];
+        for (int i = 0; i < this.distanceMatrix.length; i++) {
+            cloned.distanceMatrix[i] = Arrays.copyOf(this.distanceMatrix[i], this.distanceMatrix[i].length);
+        }
+        return cloned;
     }
 }

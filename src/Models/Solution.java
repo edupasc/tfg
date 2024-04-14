@@ -1,7 +1,8 @@
-import javax.sound.midi.Soundbank;
+package Models;
+
 import java.util.*;
 
-public class Solution {
+public class Solution implements Cloneable{
     private Instance instance;
     // open facilities
     private Set<Integer> facilities;
@@ -60,5 +61,27 @@ public class Solution {
                 }
             }
         }
+    }
+
+    public Object clone() throws CloneNotSupportedException{
+        Solution cloned = (Solution) super.clone();
+        cloned.instance = (Instance) this.instance.clone();
+        cloned.facilities = new HashSet<>(this.facilities);
+        cloned.allocations = new HashMap<>(this.allocations);
+        return cloned;
+    }
+
+    public void swap(int facility1, int facility2){
+       this.facilities.remove(facility1);
+       this.facilities.add(facility2);
+    }
+
+    public Double getObjectiveFunction() {
+        return objectiveFunction;
+    }
+
+    public void deleteAllocations(){
+        this.allocations = new HashMap<>();
+        this.objectiveFunction = Double.MIN_VALUE;
     }
 }
