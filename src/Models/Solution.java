@@ -84,4 +84,10 @@ public class Solution implements Cloneable{
         this.allocations = new HashMap<>();
         this.objectiveFunction = Double.MIN_VALUE;
     }
+
+    public void reset(){
+        this.facilities = new HashSet<>();
+        this.allocations = new HashMap<>();
+        this.objectiveFunction = Double.MIN_VALUE;
+    }
 }

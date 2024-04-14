@@ -27,6 +27,9 @@ public abstract class GenericAlg implements Algorithm {
                 for (int facility : solution.getFacilities()){
                     for (int j = 0; j<alpha; j++){
                         if (candidates[j]==-1 || instance.getDistance(i, facility) < instance.getDistance(i, candidates[j])){
+                            if (j<alpha-1){
+                                candidates[j+1] = candidates[j];
+                            }
                             candidates[j] = facility;
                             break;
                         }

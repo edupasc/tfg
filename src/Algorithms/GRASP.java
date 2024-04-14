@@ -17,6 +17,7 @@ public class GRASP extends GreedyAlg {
     // runs only the first phase, without improvement through local search
     @Override
     public Solution run() {
+        this.solution.reset();
         this.instance.floydWarshall();
         this.selectFacilities();
         super.assignFacilities();
@@ -26,12 +27,12 @@ public class GRASP extends GreedyAlg {
     // 0 for FI, 1 (or anything else) for BI
     public Solution run(int improvementMode){
         this.run();
-        System.out.println("GRASP before improvement");
-        solution.printSolution();
+        //System.out.println("GRASP before improvement");
+        //solution.printSolution();
         try {
-            this.improve2(improvementMode);
-            System.out.println("\nGRASP after improvement");
-            solution.printSolution();
+            this.improve(improvementMode);
+            //System.out.println("\nGRASP after improvement");
+            //solution.printSolution();
         } catch (CloneNotSupportedException e) {
             System.err.println("Unable to perform GRASP phase 2");
             e.printStackTrace();
@@ -71,56 +72,8 @@ public class GRASP extends GreedyAlg {
         }
     }
 
-    /* TODO: problemas de concurrencia si se edita a la vez que se itera this.solution
-    si se itera oldSolution mientras se modifica this.solution, a veces se intenta reemplazar una facility que existe en oldSolution
-    pero no en this.solution, por lo tanto la hacer el swap se añade una facility más!!! ¿POR QUÉ? no sé, no debería, this.solution
-    y oldSolution deberían ser copias idénticas antes de llegar a la línea 88 (si se hace un swap exitoso, oldSolution se convierte en
-    una copia de this.solution)
-     */
-    private void improve(int mode) throws CloneNotSupportedException{
-        //System.out.println("GRASP before improvment:");
-        //solution.printSolution();
-        // saves the previous solution in case we need to restore it
-        Solution oldSolution = this.solution;
-        this.solution = (Solution) oldSolution.clone();
-        double best = oldSolution.getObjectiveFunction();
-        int bestFacility = -1;
-        Set<Integer> facilities = new HashSet<>(this.solution.getFacilities());
-        for (int facility : facilities){
-            for (int i = 0; i<instance.getnNodes(); i++){
-                if (!facilities.contains(i)){
-                    // swaps the old facility with the new one and then recalculates allocations
-                    this.solution.swap(facility, i);
-                    this.solution.deleteAllocations();
-                    super.assignFacilities();
-                    if (this.solution.getObjectiveFunction() >= best){
-                        this.solution = (Solution) oldSolution.clone();
-                    } else{
-                        if (mode == 0){
-                            System.out.println("GRASP after improvment:");
-                            solution.printSolution();
-                            return;
-                        } else{
-                            best = this.solution.getObjectiveFunction();
-                            bestFacility = i;
-                            this.solution = (Solution) oldSolution.clone();;
-                        }
-                    }
-                }
-            }
-            this.solution.swap(facility, bestFacility);
-            this.solution.deleteAllocations();
-            super.assignFacilities();
-            //facilities.remove(facility);
-            //facilities.add(bestFacility);
-            best = -1;
-            oldSolution = (Solution) this.solution.clone();
-        }
-        //System.out.println("GRASP after improvment:");
-        //solution.printSolution();
-    }
 
-    private void improve2(int mode) throws CloneNotSupportedException {
+    private void improve(int mode) throws CloneNotSupportedException {
         double best = this.solution.getObjectiveFunction();
         int bestFacility = -1;
         List<Integer> facilities = new ArrayList<>(this.solution.getFacilities());
