@@ -97,14 +97,16 @@ public class GRASP extends GreedyAlg {
             // set of clients that are closer (or at equal distance) to client than close
             Set<Integer> alts = this.instance.getClientsInRadius(client, best, solution.getFacilities());
             for (int newFacility : alts){
+                // swap close for newFacility, then recalculate allocations
                 Solution newSolution = this.buildNewSolution(close, newFacility);
                 if (newSolution.getObjectiveFunction() < best){
                     bestSolution = newSolution;
+                    improved = true;
+                    // when mode == 0 -> FI, stick to the first improving switch found
                     if (mode==0){
                         break;
                     }
                     best = newSolution.getObjectiveFunction();
-                    improved = true;
                 }
             }
             this.solution = bestSolution;

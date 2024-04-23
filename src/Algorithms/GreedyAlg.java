@@ -12,7 +12,6 @@ public class GreedyAlg extends GenericAlg{
 
     public GreedyAlg(Instance instance) {
         super(instance);
-        candidates = new LinkedList<>();
     }
 
 
@@ -33,6 +32,7 @@ public class GreedyAlg extends GenericAlg{
     }
 
     protected void getCandidates(){
+        candidates = new LinkedList<>();
         for (int i = 0; i<this.instance.getnNodes(); i++){
             // greedy heuristic is the average distance to the rest of nodes, excluding already open facilities
             double average = this.instance.getAverageDistance(i, this.solution.getFacilities());
@@ -51,8 +51,12 @@ public class GreedyAlg extends GenericAlg{
     }
 
     protected void updateCandidateList(int remove){
-        this.candidates.remove((Object) remove);
-        for (int i = 0; i<this.candidates.size(); i++){
+        int i = 0;
+        while (this.candidates.get(i).getKey() != remove){
+            i++;
+        }
+        this.candidates.remove(i);
+        for (i = 0; i<this.candidates.size(); i++){
             Map.Entry<Integer, Double> entry = candidates.get(i);
             entry.setValue(this.instance.getAverageDistance(entry.getKey(), this.solution.getFacilities()));
         }
