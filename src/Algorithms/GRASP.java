@@ -84,40 +84,38 @@ public class GRASP extends GreedyAlg {
     }
 
 
+
     private void improve(int mode) throws CloneNotSupportedException {
-        double best = this.solution.getObjectiveFunction();
-        int bestFacility = -1;
-        List<Integer> facilities = new ArrayList<>(this.solution.getFacilities());
-        for (int i = 0; i < facilities.size(); i++){
-            int facility = facilities.get(i);
-            for (int j = 0; j<this.instance.getnNodes(); j++){
-                if (!this.solution.getFacilities().contains(j)){
-                    Solution newSolution = (Solution) this.solution.clone();
-                    newSolution.swap(facility, j);
-                    newSolution.deleteAllocations();
-                    super.assignFacilities(newSolution);
-                    if (newSolution.getObjectiveFunction() < best){
-                        // FI
-                        if(mode == 0){
-                            this.solution = newSolution;
-                            return;
-                        // BI
-                        } else{
-                            bestFacility = j;
-                            best = newSolution.getObjectiveFunction();
-                        }
+        boolean improved;
+        do{
+            improved = false;
+            double best = solution.getObjectiveFunction();
+            Solution bestSolution = solution;
+            // facility to close
+            int close = solution.getWorstFacilty();
+            int client = solution.getWorstClient();
+            // set of clients that are closer (or at equal distance) to client than close
+            Set<Integer> alts = this.instance.getClientsInRadius(client, best, solution.getFacilities());
+            for (int newFacility : alts){
+                Solution newSolution = this.buildNewSolution(close, newFacility);
+                if (newSolution.getObjectiveFunction() < best){
+                    bestSolution = newSolution;
+                    if (mode==0){
+                        break;
                     }
+                    best = newSolution.getObjectiveFunction();
+                    improved = true;
                 }
             }
-            if (bestFacility != -1){
-                facilities.remove(i);
-                facilities.add(bestFacility);
-                solution.getFacilities().remove(facility);
-                solution.getFacilities().add(bestFacility);
-                solution.deleteAllocations();
-                super.assignFacilities();
-                bestFacility = -1;
-            }
-        }
+            this.solution = bestSolution;
+        } while (improved);
+    }
+
+    private Solution buildNewSolution(int close, int newFacility) throws CloneNotSupportedException {
+        Solution newSolution = (Solution) this.solution.clone();
+        newSolution.swap(close, newFacility);
+        newSolution.deleteAllocations();
+        super.assignFacilities(newSolution);
+        return newSolution;
     }
 }

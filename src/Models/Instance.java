@@ -1,10 +1,7 @@
 package Models;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -131,5 +128,15 @@ public class Instance implements Cloneable{
         }
         return average /= i;
 
+    }
+
+    public Set<Integer> getClientsInRadius(int center, double radius, Set<Integer> faciltiies){
+        Set<Integer> result = new HashSet<>();
+        for (int i = 0; i<this.nNodes; i++){
+            if(!faciltiies.contains(i) && this.getDistance(center, i) <= radius){
+                result.add(i);
+            }
+        }
+        return result;
     }
 }

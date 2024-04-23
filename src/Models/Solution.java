@@ -94,4 +94,12 @@ public class Solution implements Cloneable{
         this.allocations = new HashMap<>();
         this.objectiveFunction = Double.MIN_VALUE;
     }
+
+    public int getWorstClient() {
+        return worstClient;
+    }
+
+    public int getWorstFacilty() {
+        return worstFacilty;
+    }
 }

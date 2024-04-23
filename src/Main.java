@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         Instance instance = new Instance("instances/att48_2_20.txt");
         GRASP grasp = new GRASP(instance);
-        Solution graspSolution = grasp.run();
+        Solution graspSolution = grasp.run(1);
         graspSolution.printSolution();
 
     }
