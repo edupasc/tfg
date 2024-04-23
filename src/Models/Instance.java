@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -116,5 +117,19 @@ public class Instance implements Cloneable{
             cloned.distanceMatrix[i] = Arrays.copyOf(this.distanceMatrix[i], this.distanceMatrix[i].length);
         }
         return cloned;
+    }
+
+    // returns the average distance between a node and the rest (excluding the ones specified in the exclusion set)
+    public Double getAverageDistance(int node, Set exclusionSet){
+        double average = 0;
+        int i = 0;
+        for (int j = 0; j<this.getnNodes(); j++){
+            if (exclusionSet == null || !exclusionSet.contains(j)){
+                average+=this.getDistance(node ,j);
+                i++;
+            }
+        }
+        return average /= i;
+
     }
 }

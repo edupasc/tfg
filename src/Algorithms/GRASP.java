@@ -42,34 +42,45 @@ public class GRASP extends GreedyAlg {
     };
 
     private void selectFacilities() {
-        List<Map.Entry<Integer, Double>> candidates = super.getCandidates();
+        super.getCandidates();
+        List<Map.Entry<Integer, Double>> candidates = super.candidates;
+        double alpha = this.getAlpha();
+        Random rand = new Random();
+        // choose facilities at random from the RCL
+        for (int i = 0; i < this.instance.getnFacilities(); i++) {
+            double threshold = this.getThreshold(alpha, candidates);
+            List<Integer> RCL = this.buildRCL(candidates, threshold);
+            int newFacilty = RCL.get(rand.nextInt(RCL.size()));
+            // add a new facility chosen at random
+            solution.addFacilitiy(newFacilty);
+            super.updateCandidateList(newFacilty);
+        }
+    }
+
+    private double getAlpha(){
         Random rand = new Random();
         double alpha = alphas[rand.nextInt(alphas.length)];
         if (alpha == -1) {
             alpha = rand.nextDouble(1);
         }
+        return alpha;
+    }
+
+    private double getThreshold(double alpha, List<Map.Entry<Integer, Double>> candidates){
         // th = g_min + alpha * (g_max - g_min)
         double threshold = candidates.get(0).getValue() + alpha * (candidates.get(candidates.size() - 1).getValue() - candidates.get(0).getValue());
+        return threshold;
+    }
+
+    private List<Integer> buildRCL(List<Map.Entry<Integer, Double>> candidates, double threshold){
         List<Integer> RCL = new ArrayList<>();
         int i = 0;
-        // build the restricted candidates list using only those nodes whose medium distance is below the threshold
+        // build the restricted candidates list using only those nodes whose average distance is below the threshold
         while (candidates.get(i).getValue() <= threshold) {
             RCL.add(candidates.get(i).getKey());
             i++;
         }
-
-        // choose facilities at random from the RCL
-        for (i = 0; i < this.instance.getnFacilities(); i++) {
-            int newFacilty = RCL.get(rand.nextInt(RCL.size()));
-            if (!solution.hasFacility(newFacilty)) {
-                // add a new facility chosen at random
-                solution.addFacilitiy(newFacilty);
-            } else {
-                // if the current node was already a facility, ignore this iteration
-                i--;
-            }
-
-        }
+        return RCL;
     }
 
 

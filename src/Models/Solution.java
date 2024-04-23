@@ -9,6 +9,8 @@ public class Solution implements Cloneable{
     // matches each node with up to alpha facilities, ordered from closest to furthest
     private Map<Integer, List<Integer>> allocations;
     private Double objectiveFunction;
+    private int worstClient;
+    private int worstFacilty;
 
     public Solution(Instance instance) {
         this.instance = instance;
@@ -36,6 +38,8 @@ public class Solution implements Cloneable{
         // if the distance between the node and its alpha-th facility is greater than the current maximum, update it
         if (priority == instance.getAlpha() - 1 && instance.getDistance(facility, node) > this.objectiveFunction){
             this.objectiveFunction = instance.getDistance(facility, node);
+            this.worstClient = node;
+            this.worstFacilty = facility;
         }
     }
 

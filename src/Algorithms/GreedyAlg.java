@@ -1,5 +1,6 @@
 package Algorithms;
 
+import Models.CandidatesComparator;
 import Models.Instance;
 import Models.Solution;
 
@@ -7,8 +8,11 @@ import java.util.*;
 
 public class GreedyAlg extends GenericAlg{
 
+    List<Map.Entry<Integer, Double>> candidates;
+
     public GreedyAlg(Instance instance) {
         super(instance);
+        candidates = new LinkedList<>();
     }
 
 
@@ -21,30 +25,38 @@ public class GreedyAlg extends GenericAlg{
     }
 
     private void selectFacilities(){
-        List<Map.Entry<Integer, Double>> candidates = getCandidates();
+        getCandidates();
         // selects the p facilities with the lowest average distance to the rest of nodes
         for (int i = 0; i<this.instance.getnFacilities(); i++){
-            this.solution.addFacilitiy(candidates.get(i).getKey());
+            this.solution.addFacilitiy(getNextCandidate());
         }
     }
 
-    protected List<Map.Entry<Integer, Double>> getCandidates(){
-        List<Map.Entry<Integer, Double>> candidates = new ArrayList<>();
+    protected void getCandidates(){
         for (int i = 0; i<this.instance.getnNodes(); i++){
-            // greedy criterion is the average distance to the rest of nodes
-            double average = 0;
-            for (int j = 0; j<this.instance.getnNodes(); j++){
-                average+=this.instance.getDistance(i ,j);
-            }
-            average /= (this.instance.getnNodes() - 1);
+            // greedy heuristic is the average distance to the rest of nodes, excluding already open facilities
+            double average = this.instance.getAverageDistance(i, this.solution.getFacilities());
             candidates.add(new AbstractMap.SimpleEntry<>(i, average));
         }
-        candidates.sort(new Comparator<Map.Entry<Integer, Double>>() {
-            @Override
-            public int compare(Map.Entry<Integer, Double> o1, Map.Entry<Integer, Double> o2) {
-                return (int) (o1.getValue() - o2.getValue());
-            }
-        });
-        return candidates;
+        CandidatesComparator comparator = new CandidatesComparator();
+        candidates.sort(comparator);
+    }
+
+
+    protected int getNextCandidate(){
+        int candidate = this.candidates.get(0).getKey();
+        // comment this for the prev version of greedy
+        updateCandidateList(candidate);
+        return candidate;
+    }
+
+    protected void updateCandidateList(int remove){
+        this.candidates.remove((Object) remove);
+        for (int i = 0; i<this.candidates.size(); i++){
+            Map.Entry<Integer, Double> entry = candidates.get(i);
+            entry.setValue(this.instance.getAverageDistance(entry.getKey(), this.solution.getFacilities()));
+        }
+        CandidatesComparator comparator = new CandidatesComparator();
+        candidates.sort(comparator);
     }
 }
