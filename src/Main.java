@@ -1,31 +1,50 @@
 import Algorithms.GRASP;
 import Algorithms.GreedyAlg;
 import Algorithms.RandomAlg;
+import Algorithms.VNS;
 import Models.Instance;
 import Models.Solution;
 
+import java.io.File;
+
 
 public class Main {
+    /*public static void main(String[] args) {
+        File dir = new File("instances/subset");
+        File[] dirList = dir.listFiles();
+        double[] alphas = {0.25, 0.5, 0.75, -1};
+        int i = 0;
+        for (File file : dirList){
+            i++;
+            //if (i >= 52) {
+                Instance instance = new Instance(file.getPath());
+                GRASP grasp = new GRASP(instance);
+                for (double alpha : alphas){
+                    try{
+                        Solution sol = grasp.run(1, alpha);
+                        System.out.print(grasp.getAlpha() + "\t");
+                        sol.print();
+                    } catch (IllegalArgumentException e){
+                        Solution sol = grasp.run(1, alpha);
+                        System.out.print(grasp.getAlpha() + "\t");
+                        sol.print();
+                    }
+
+                }
+            //}
+        }
+    }
+     */
+
     public static void main(String[] args) {
         Instance instance = new Instance("instances/att48_2_20.txt");
-        RandomAlg random = new RandomAlg(instance);
-        Solution rnSol = random.run();
-        System.out.println("RANDOM");
-        rnSol.printSolution();
-        //GreedyAlg gr = new GreedyAlg(instance);
-       // Solution grSol = gr.run();
-        //System.out.println("\nGREEDY");
-        //grSol.printSolution();
         GRASP grasp = new GRASP(instance);
-        Solution graspSolution = grasp.run();
-        System.out.println("\nGRASP w/o improv");
-        graspSolution.printSolution();
-        Solution graspSolutionFI = grasp.run(0);
-        System.out.println("\nGRASP FI");
-        graspSolutionFI.printSolution();
-        Solution graspSolutionBI = grasp.run(1);
-        System.out.println("\nGRASP BI");
-        graspSolutionBI.printSolution();
-
+        Solution grSol = grasp.run(1, 0.75);
+        System.out.println("GRASP");
+        grSol.printVerbose();
+        VNS vns = new VNS(instance, grSol);
+        Solution sol = vns.run();
+        System.out.println("\nVNS");
+        sol.printVerbose();
     }
 }
