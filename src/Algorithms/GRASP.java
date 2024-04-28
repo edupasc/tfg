@@ -8,6 +8,7 @@ import java.util.*;
 public class GRASP extends GreedyAlg {
     // -1 will be treated as random between 0 and 1
     private final static double[] alphas = {0.25, 0.5, 0.75, -1};
+    private double alpha = -2;
 
     public GRASP(Instance instance) {
         super(instance);
@@ -17,10 +18,22 @@ public class GRASP extends GreedyAlg {
     // runs only the first phase, without improvement through local search
     @Override
     public Solution run() {
+        long startTime = System.currentTimeMillis();
+        if (this.alpha == -2){
+            this.setAlpha();
+        }
         this.solution.reset();
         this.instance.floydWarshall();
         this.selectFacilities();
         super.assignFacilities();
+        long endTime = System.currentTimeMillis() - startTime;
+        this.solution.setRuntime(endTime);
+        return this.solution;
+    }
+
+    public Solution run(double alpha){
+        this.setAlpha(alpha);
+        this.run();
         return this.solution;
     }
 
@@ -41,10 +54,19 @@ public class GRASP extends GreedyAlg {
         return this.solution;
     };
 
+    public Solution run(int improvementMode, double alpha){
+        long startTime = System.currentTimeMillis();
+        this.setAlpha(alpha);
+        this.run(improvementMode);
+        long endTime = System.currentTimeMillis() - startTime;
+        this.solution.setRuntime(endTime);
+        return this.solution;
+    }
+
     private void selectFacilities() {
         super.getCandidates();
         List<Map.Entry<Integer, Double>> candidates = super.candidates;
-        double alpha = this.getAlpha();
+        double alpha = this.alpha;
         Random rand = new Random();
         // choose facilities at random from the RCL
         for (int i = 0; i < this.instance.getnFacilities(); i++) {
@@ -57,13 +79,22 @@ public class GRASP extends GreedyAlg {
         }
     }
 
-    private double getAlpha(){
+    private void setAlpha(){
         Random rand = new Random();
         double alpha = alphas[rand.nextInt(alphas.length)];
-        if (alpha == -1) {
+        this.setAlpha(alpha);
+    }
+
+    private void setAlpha(double alpha){
+        if (alpha == -1){
+            Random rand = new Random();
             alpha = rand.nextDouble(1);
         }
-        return alpha;
+        this.alpha = alpha;
+    }
+
+    public double getAlpha(){
+        return this.alpha;
     }
 
     private double getThreshold(double alpha, List<Map.Entry<Integer, Double>> candidates){
@@ -76,7 +107,7 @@ public class GRASP extends GreedyAlg {
         List<Integer> RCL = new ArrayList<>();
         int i = 0;
         // build the restricted candidates list using only those nodes whose average distance is below the threshold
-        while (candidates.get(i).getValue() <= threshold) {
+        while (i < candidates.size() && candidates.get(i).getValue() <= threshold) {
             RCL.add(candidates.get(i).getKey());
             i++;
         }
@@ -85,7 +116,7 @@ public class GRASP extends GreedyAlg {
 
 
 
-    private void improve(int mode) throws CloneNotSupportedException {
+    protected void improve(int mode) throws CloneNotSupportedException {
         boolean improved;
         do{
             improved = false;

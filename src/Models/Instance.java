@@ -107,6 +107,10 @@ public class Instance implements Cloneable{
         return filepath;
     }
 
+    public String getFilename(){
+        return new File(this.filepath).getName();
+    }
+
     public Object clone() throws CloneNotSupportedException{
         Instance cloned = (Instance) super.clone();
         cloned.distanceMatrix = new double[this.distanceMatrix.length][];

@@ -11,6 +11,7 @@ public class Solution implements Cloneable{
     private Double objectiveFunction;
     private int worstClient;
     private int worstFacilty;
+    private long runtime;
 
     public Solution(Instance instance) {
         this.instance = instance;
@@ -47,7 +48,7 @@ public class Solution implements Cloneable{
         return facilities;
     }
     
-    public void printSolution(){
+    public void printVerbose(){
         System.out.println("Solution for instance: " + instance.getFilepath());
         System.out.println("No of nodes: " + instance.getnNodes() + ". No. of facilties: " + instance.getnFacilities() + ". No. of demand points: " + (instance.getnNodes() - instance.getnFacilities()));
         System.out.println("Alpha = " + this.instance.getAlpha());
@@ -65,6 +66,14 @@ public class Solution implements Cloneable{
                 }
             }
         }
+    }
+
+    public void print(){
+        //System.out.println("Instance\tO.F Value\tTime (s)");
+        if (this.facilities.size() != this.instance.getnFacilities()){
+            System.out.println("Algo está mal aquí!");
+        }
+        System.out.println(this.instance.getFilename() + "\t" + this.objectiveFunction + "\t" + ((double) this.runtime / 1000));
     }
 
     public Object clone() throws CloneNotSupportedException{
@@ -101,5 +110,9 @@ public class Solution implements Cloneable{
 
     public int getWorstFacilty() {
         return worstFacilty;
+    }
+
+    public void setRuntime(long runtime) {
+        this.runtime = runtime;
     }
 }
