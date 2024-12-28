@@ -17,22 +17,15 @@ public class Main {
         for (File file : dirList){
             i++;
                 Instance instance = new Instance(file.getPath());
-                GRASP grasp = new GRASP(instance);
+                GreedyAlg greedyAlg = new GreedyAlg(instance);
             //for (double alpha : alphas){
                     try{
-                        Solution solGRASP = grasp.run(0, alpha);
-                        //System.out.println("GRASP");
-                        solGRASP.print();
-                        VNS vns = new VNS(instance, solGRASP);
-                        Solution solVNS = vns.run();
-                        //System.out.println("\nVNS");
-                        solVNS.print();
+                        Solution sol = greedyAlg.run();
+                        sol.print();
                     } catch (IllegalArgumentException e){
-                        Solution sol = grasp.run(1, alpha);
+                        Solution sol = greedyAlg.run();
                         sol.print();
                     }
-                    break;
-
                 }
             }
 }

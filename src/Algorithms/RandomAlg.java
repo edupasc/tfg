@@ -13,11 +13,14 @@ public class RandomAlg extends GenericAlg{
 
     @Override
     public Solution run() {
+        long startTime = System.currentTimeMillis();
         // applies floydWarshall to the original graph
         instance.floydWarshall();
         // selects p facilities at random
         this.selectFacilities();
         super.assignFacilities();
+        long endTime = System.currentTimeMillis() - startTime;
+        this.solution.setRuntime(endTime);
         return this.solution;
 
     }

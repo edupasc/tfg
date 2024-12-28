@@ -17,9 +17,12 @@ public class GreedyAlg extends GenericAlg{
 
     @Override
     public Solution run() {
+        long startTime = System.currentTimeMillis();
         this.instance.floydWarshall();
         this.selectFacilities();
         super.assignFacilities();
+        long endTime = System.currentTimeMillis() - startTime;
+        this.solution.setRuntime(endTime);
         return this.solution;
     }
 
