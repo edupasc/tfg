@@ -15,18 +15,20 @@ public class VNS extends GRASP{
     }
 
     public Solution run() {
+        long startTime = System.currentTimeMillis();
         Solution oldSolution;
         try{
             oldSolution = (Solution) this.solution.clone();
-            for (double k : kValues) {
+            for (int i = 0; i< kValues.length; i++) {
                 boolean improved = true;
                 while (improved) {
                     improved = false;
-                    this.shake(k);
-                    super.improve(1);
+                    this.shake(kValues[i]);
+                    super.improve(0);
                     if (this.solution.getObjectiveFunction() < oldSolution.getObjectiveFunction()) {
                         improved = true;
                         oldSolution = (Solution) this.solution.clone();
+                        i=0;
                     }
                 }
             }
@@ -35,11 +37,9 @@ public class VNS extends GRASP{
             e.printStackTrace();
             return null;
         }
-        if (this.solution.getObjectiveFunction() < oldSolution.getObjectiveFunction()){
-            return this.solution;
-        } else{
-            return oldSolution;
-        }
+        long endTime = System.currentTimeMillis() - startTime;
+        oldSolution.setRuntime(oldSolution.getRuntime() + endTime);
+        return oldSolution;
     }
 
     // closes and opens k (%) of facilities at random

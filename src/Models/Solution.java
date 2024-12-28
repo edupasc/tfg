@@ -115,4 +115,8 @@ public class Solution implements Cloneable{
     public void setRuntime(long runtime) {
         this.runtime = runtime;
     }
+
+    public long getRuntime() {
+        return runtime;
+    }
 }
