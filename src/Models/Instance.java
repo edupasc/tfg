@@ -143,4 +143,8 @@ public class Instance implements Cloneable{
         }
         return result;
     }
+
+    public void print(){
+        System.out.println(this.filepath + "\t" + this.nNodes + "\t" + this.nEdges + "\t" + this.nFacilities + "\t" + this.alpha);
+    }
 }

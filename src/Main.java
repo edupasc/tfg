@@ -12,22 +12,11 @@ public class Main {
     public static void main(String[] args) {
         File dir = new File("instances/");
         File[] dirList = dir.listFiles();
-        double alpha = 0.75;
-        int i = 0;
-        for (File file : dirList){
-            i++;
-                Instance instance = new Instance(file.getPath());
-                GreedyAlg greedyAlg = new GreedyAlg(instance);
-            //for (double alpha : alphas){
-                    try{
-                        Solution sol = greedyAlg.run();
-                        sol.print();
-                    } catch (IllegalArgumentException e){
-                        Solution sol = greedyAlg.run();
-                        sol.print();
-                    }
-                }
-            }
+        for (File file : dirList) {
+            Instance instance = new Instance(file.getPath());
+            instance.print();
+        }
+    }
 }
     //}
 
